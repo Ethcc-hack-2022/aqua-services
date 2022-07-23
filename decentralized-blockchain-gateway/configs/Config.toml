@@ -21,12 +21,15 @@ name = "multi_provider_query"
 max_heap_size = "2 MiB"
 logger_enabled = true
 
+[[module]]
+name = "send_tx"
+max_heap_size = "2 MiB"
+logger_enabled = true
 
 [[module]]
 name = "simple_quorum"
 max_heap_size = "2 MiB"
 logger_enabled = true
-
 
 [[module]]
 name = "ipfs_cli"

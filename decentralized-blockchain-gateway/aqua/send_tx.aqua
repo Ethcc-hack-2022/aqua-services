@@ -1,0 +1,48 @@
+import "@fluencelabs/aqua-lib/math.aqua"
+import "@fluencelabs/aqua-ipfs/ipfs-api.aqua"
+import "@fluencelabs/aqua-ipfs/ipfs.aqua"
+
+data FunctionAddress:
+  peer_id: string
+  service_id: string
+
+data ProviderInfo:
+  name: string
+  url: string
+
+data EVMResult:
+  provider: string
+  stdout: string
+  stderr: string
+
+service MyOp("op"):
+  array_length(providers: []ProviderInfo) -> i64
+  identity(x: i64) -> f64
+
+service MyOp2("op"):
+  array_length(providers: []FunctionAddress) -> i64
+
+service SendTx("service-id"):
+  send_raw_tx(provider: ProviderInfo, params: []string) -> EVMResult
+
+service Utilities("service_id"):
+  kv_to_u64(kv: string, k: string) -> u64
+
+service Console("run-console"):
+    print(msg: string)
+
+func get_tx_hash(provider: ProviderInfo, addr: FunctionAddress, rawTx: []string ) -> []EVMResult:
+  result: *EVMResult
+  result2: *string
+
+  on addr.peer_id:
+      SendTx addr.service_id
+      result <- SendTx.send_raw_tx(provider, rawTx)
+      result2 <<- provider.name
+  <- result
+
+service ConsoleEVMResults("run-console"):
+    print(result :[]EVMResult)
+
+service ConsoleEVMResult("run-console"):
+    print(result :EVMResult)
